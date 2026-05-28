@@ -12,3 +12,22 @@ def get_folder_snapshot(folder_path):
         return {item for item in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, item))}
     except Exception:
         return set()
+
+def watch_folder(folder_path):
+    """Watches the specified folder for new files in real-time."""
+    print("==========================================")
+    print("     👁️  WATCHDOG MODE — File Organizer")
+    print("==========================================")
+    print(f"Watching: {folder_path}")
+    print("Interval: every 3 seconds | Ctrl+C to stop")
+    print("------------------------------------------")
+
+    old_snapshot = get_folder_snapshot(folder_path)
+
+    try:
+        while True:
+            time.sleep(3)
+            print("watching...")
+    except KeyboardInterrupt:
+        print("\n⛔ Stopped.")
+
