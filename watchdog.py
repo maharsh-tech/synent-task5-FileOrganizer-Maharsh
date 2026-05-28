@@ -33,15 +33,28 @@ def watch_folder(folder_path):
             # Filter out protected files
             new_files = {f for f in new_files if not is_protected(f)}
             
+            unstable_files = set()
             if new_files:
                 for filename in sorted(new_files):
+                    full_path = os.path.join(folder_path, filename)
+                    try:
+                        size_1 = os.path.getsize(full_path)
+                        time.sleep(1)
+                        size_2 = os.path.getsize(full_path)
+                        if size_1 != size_2:
+                            unstable_files.add(filename)
+                            continue
+                    except Exception:
+                        unstable_files.add(filename)
+                        continue
+
                     category = get_category(filename)
                     moved = organize_file(filename, folder_path)
                     if moved:
                         timestamp = datetime.now().strftime("%H:%M:%S")
                         print(f"[{timestamp}]  {filename:20s}  ->  {category}/")
             
-            old_snapshot = fresh_snapshot
+            old_snapshot = fresh_snapshot - unstable_files
     except KeyboardInterrupt:
         print("\n⛔ Stopped.")
 
