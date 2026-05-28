@@ -27,7 +27,17 @@ def watch_folder(folder_path):
     try:
         while True:
             time.sleep(3)
-            print("watching...")
+            fresh_snapshot = get_folder_snapshot(folder_path)
+            new_files = fresh_snapshot - old_snapshot
+            
+            # Filter out protected files
+            new_files = {f for f in new_files if not is_protected(f)}
+            
+            if new_files:
+                for filename in sorted(new_files):
+                    print(f"Found new file: {filename}")
+            
+            old_snapshot = fresh_snapshot
     except KeyboardInterrupt:
         print("\n⛔ Stopped.")
 
