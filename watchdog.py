@@ -1,7 +1,7 @@
 import os
 import time
 from datetime import datetime
-from detector import is_protected
+from detector import is_protected, get_category
 from organizer import organize_file
 
 def get_folder_snapshot(folder_path):
@@ -35,7 +35,11 @@ def watch_folder(folder_path):
             
             if new_files:
                 for filename in sorted(new_files):
-                    print(f"Found new file: {filename}")
+                    category = get_category(filename)
+                    moved = organize_file(filename, folder_path)
+                    if moved:
+                        timestamp = datetime.now().strftime("%H:%M:%S")
+                        print(f"[{timestamp}]  {filename:20s}  ->  {category}/")
             
             old_snapshot = fresh_snapshot
     except KeyboardInterrupt:
