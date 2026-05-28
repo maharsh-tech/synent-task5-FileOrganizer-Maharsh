@@ -23,6 +23,8 @@ def watch_folder(folder_path):
     print("------------------------------------------")
 
     old_snapshot = get_folder_snapshot(folder_path)
+    start_time = time.time()
+    total_organized = 0
 
     try:
         while True:
@@ -51,10 +53,22 @@ def watch_folder(folder_path):
                     category = get_category(filename)
                     moved = organize_file(filename, folder_path)
                     if moved:
+                        total_organized += 1
                         timestamp = datetime.now().strftime("%H:%M:%S")
                         print(f"[{timestamp}]  {filename:20s}  ->  {category}/")
             
             old_snapshot = fresh_snapshot - unstable_files
     except KeyboardInterrupt:
-        print("\n⛔ Stopped.")
+        elapsed = time.time() - start_time
+        if elapsed < 60:
+            time_str = f"{int(elapsed)}s"
+        elif elapsed < 3600:
+            time_str = f"{int(elapsed // 60)}m {int(elapsed % 60)}s"
+        else:
+            time_str = f"{int(elapsed // 3600)}h {int((elapsed % 3600) // 60)}m {int(elapsed % 60)}s"
+        
+        print("------------------------------------------")
+        print("⛔ Stopped.")
+        print(f"📊 Session: {total_organized} file(s) organized in {time_str}")
+        print("==========================================")
 
