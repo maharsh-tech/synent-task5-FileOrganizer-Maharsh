@@ -69,19 +69,31 @@ def get_folder_path():
 
 def main():
     print_banner()
- 
+
+    print("Select Mode:")
+    print("  [1] Organize existing files now")
+    print("  [2] Watch folder in real-time (Watchdog mode)")
+    print()
+    mode = input("Select option (1 or 2): ").strip()
+
+    if mode not in ("1", "2"):
+        print("Invalid selection. Exiting.")
+        return
+
     folder_path = get_folder_path()
  
     if not folder_path:
         print("No folder path provided. Exiting.")
         return
  
-    print(f"\n Starting organizer on: {folder_path}")
-    print()
- 
-    summary = organize_folder(folder_path)
- 
-    print_summary(summary)
+    if mode == "1":
+        print(f"\n Starting organizer on: {folder_path}")
+        print()
+        summary = organize_folder(folder_path)
+        print_summary(summary)
+    else:
+        from watchdog import watch_folder
+        watch_folder(folder_path)
 
 if __name__ == "__main__":
     main()
